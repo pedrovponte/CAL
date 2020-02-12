@@ -1,1 +1,1 @@
-Concecao e Analise de Algoritmos
+Conceção e Análise de Algoritmos
