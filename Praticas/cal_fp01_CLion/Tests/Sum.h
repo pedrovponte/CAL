@@ -23,4 +23,6 @@ using namespace std;
  */
 string calcSum(int* sequence, int size);
 
+void testPerformanceCalcSum();
+
 #endif /* SUM_H_ */
