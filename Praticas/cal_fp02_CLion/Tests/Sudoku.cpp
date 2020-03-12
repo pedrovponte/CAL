@@ -94,10 +94,49 @@ bool Sudoku::isComplete()
  */
 bool Sudoku::solve()
 {
-	return false;
+    int best_x = -1, best_y = -1;
+
+    if(isComplete())
+        return true;
+
+    if(!choose_best(best_x, best_y))
+        return false;
+    for(int i = 1; i < 10; i++){
+        if(!columnHasNumber[best_y][i] && !lineHasNumber[best_x][i] && !block3x3HasNumber[best_x / 3][best_y / 3]){
+
+        }
+    }
 }
 
+bool Sudoku::choose_best(int &best_x, int &best_y){
+    int best_poss = 9;
+    for(int i = 0; i < 9; i++){
+        for(int j = 0; j < 9; j++){
+            if(numbers[i][j] == 0){
+                int possibilities = 0;
+                for(int p = 1; p < 10; p++){
+                    if(accepts(i,j,p))
+                        possibilities++;
+                }
+                if(possibilities == 0)
+                    return false;
 
+                if(possibilities < best_poss) {
+                    best_poss = possibilities;
+                    best_x = i;
+                    best_y = j;
+                    if(possibilities == 1)
+                        return true;
+                }
+            }
+        }
+    }
+    return best_x >= 0;
+}
+
+bool Sudoku::accepts(int i, int j, int n){
+    return !lineHasNumber[i][n] && !columnHasNumber[j][n] && !block3x3HasNumber[i][j][n];
+}
 
 /**
  * Imprime o Sudoku.

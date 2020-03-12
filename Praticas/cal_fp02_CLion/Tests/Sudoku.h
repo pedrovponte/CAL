@@ -67,6 +67,10 @@ public:
 	 */
 	bool solve();
 
+	bool choose_best(int &best_x, int &best_y);
+
+	bool accepts(int i, int j, int n);
+
 
 	/**
 	 * Imprime o Sudoku.
