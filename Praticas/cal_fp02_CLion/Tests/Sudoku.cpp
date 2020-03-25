@@ -94,22 +94,39 @@ bool Sudoku::isComplete()
  */
 bool Sudoku::solve()
 {
-    int best_x = -1, best_y = -1;
+    int best_x, best_y;
 
     if(isComplete())
         return true;
 
     if(!choose_best(best_x, best_y))
         return false;
-    for(int i = 1; i < 10; i++){
-        if(!columnHasNumber[best_y][i] && !lineHasNumber[best_x][i] && !block3x3HasNumber[best_x / 3][best_y / 3]){
 
+    for(int i = 1; i < 10; i++){
+        if(!columnHasNumber[best_y][i] && !lineHasNumber[best_x][i] && !block3x3HasNumber[best_x / 3][best_y / 3][i]){
+            numbers[best_x][best_y] = i;
+            lineHasNumber[best_x][i] = true;
+            columnHasNumber[best_y][i] = true;
+            block3x3HasNumber[best_x / 3][best_y / 3][i] = true;
+            countFilled++;
+            if(solve()) {
+                return true;
+            }
+            else{
+                numbers[best_x][best_y] = 0;
+                lineHasNumber[best_x][i] = false;
+                columnHasNumber[best_y][i] = false;
+                block3x3HasNumber[best_x / 3][best_y / 3][i] = false;
+                countFilled--;
+            }
         }
     }
+    return false;
 }
 
 bool Sudoku::choose_best(int &best_x, int &best_y){
-    int best_poss = 9;
+    best_x = -1, best_y = -1;
+    int best_poss = 10;
     for(int i = 0; i < 9; i++){
         for(int j = 0; j < 9; j++){
             if(numbers[i][j] == 0){
