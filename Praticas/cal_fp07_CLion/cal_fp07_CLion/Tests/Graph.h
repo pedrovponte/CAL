@@ -16,6 +16,7 @@ using namespace std;
 template <class T> class Edge;
 template <class T> class Graph;
 template <class T> class Vertex;
+template <class T> class myComparator;
 
 #define INF std::numeric_limits<double>::max()
 
@@ -29,7 +30,7 @@ class Vertex {
 	double dist = 0;
 	Vertex<T> *path = nullptr;
 	int queueIndex = 0; 		// required by MutablePriorityQueue
-
+    Vertex<T> *parent = nullptr;
 	void addEdge(Vertex<T> *dest, double w);
 
 
@@ -90,9 +91,11 @@ public:
 	Edge(Vertex<T> *o, Vertex<T> *d, double w);
 	friend class Graph<T>;
 	friend class Vertex<T>;
+    friend class myComparator<T>;
 
 	// Fp07
 	double getWeight() const;
+
 };
 
 template <class T>
@@ -140,6 +143,7 @@ public:
     bool addBidirectionalEdge(const T &sourc, const T &dest, double w);
 	vector<Vertex<T>*> calculatePrim();
 	vector<Vertex<T>*> calculateKruskal();
+    T find(const T &in);
 };
 
 
@@ -393,11 +397,53 @@ vector<Vertex<T>* > Graph<T>::calculatePrim() {
     return vertexSet;
 }
 
+template <class T>
+class myComparator
+{
+    public:
+        int operator() (const Edge<T>& p1, const Edge<T>& p2)
+        {
+            if(p1.getWeight() == p2.getWeight()) {
+                return (p1.orig->getInfo() > p1.dest->getInfo());
+            }
+            return p1.getWeight() > p2.getWeight();
+        }
+};
 
+template<class T>
+T Graph<T>::find(const T &in)
+{
+    Vertex<T>* v = findVertex(in);
+    if (v->parent == v)
+        return v->getInfo();
+    return find((v->parent)->getInfo());
+}
 
 template <class T>
 vector<Vertex<T>*> Graph<T>::calculateKruskal() {
-    // TODO
+    int edgesAccepted = 0;
+    priority_queue<Edge<T>, vector<Edge<T>>, myComparator<T>> h;
+    //1
+    for(Vertex<T>* v: vertexSet){
+        v->parent = v;
+        for(Edge<T> e: v->adj){
+            h.push(e);
+        }
+    }
+    while(edgesAccepted< getNumVertex()-1){//condition of 3
+        //2
+        Edge<T> e = h.top();
+        h.pop();// smallest edge
+        T u = find((e.orig)->getInfo());
+        T v = find((e.dest)->getInfo());
+        if(u!= v){//cycle is not formed
+            //include the edge
+            edgesAccepted ++;
+            (e.dest)->parent = (e.orig)->parent;
+            (e.dest)->path = (e.orig);
+        }
+    }
+
     return vertexSet;
 }
 
