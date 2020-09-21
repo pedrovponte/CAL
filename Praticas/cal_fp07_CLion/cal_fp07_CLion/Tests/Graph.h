@@ -430,7 +430,7 @@ vector<Vertex<T>*> Graph<T>::calculateKruskal() {
             h.push(e);
         }
     }
-    while(edgesAccepted< getNumVertex()-1){//condition of 3
+    while(edgesAccepted < getNumVertex()-1){//condition of 3
         //2
         Edge<T> e = h.top();
         h.pop();// smallest edge
